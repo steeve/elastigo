@@ -311,13 +311,16 @@ func (b *BulkIndexer) UpdateWithWithScript(index string, _type string, id, paren
 	return b.Update(index, _type, id, parent, ttl, date, data)
 }
 
-func (b *BulkIndexer) UpdateWithPartialDoc(index string, _type string, id, parent, ttl string, date *time.Time, partialDoc interface{}, upsert bool) error {
+func (b *BulkIndexer) UpdateWithPartialDoc(index string, _type string, id, parent, ttl string, date *time.Time, partialDoc interface{}, upsert bool, detectNoOp bool) error {
 
 	var data map[string]interface{} = make(map[string]interface{})
 
 	data["doc"] = partialDoc
 	if upsert {
 		data["doc_as_upsert"] = true
+	}
+	if detectNoOp {
+		data["detect_noop"] = true
 	}
 	return b.Update(index, _type, id, parent, ttl, date, data)
 }
