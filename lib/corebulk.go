@@ -288,6 +288,16 @@ func (b *BulkIndexer) Index(index string, _type string, id, parent, ttl string, 
 	return nil
 }
 
+func (b *BulkIndexer) Create(index string, _type string, id, parent, ttl string, date *time.Time, data interface{}) error {
+	//{ "index" : { "_index" : "test", "_type" : "type1", "_id" : "1" } }
+	by, err := WriteBulkBytes("create", index, _type, id, parent, ttl, date, data)
+	if err != nil {
+		return err
+	}
+	b.bulkChannel <- by
+	return nil
+}
+
 func (b *BulkIndexer) Update(index string, _type string, id, parent, ttl string, date *time.Time, data interface{}) error {
 	//{ "index" : { "_index" : "test", "_type" : "type1", "_id" : "1" } }
 	by, err := WriteBulkBytes("update", index, _type, id, parent, ttl, date, data)
@@ -357,7 +367,7 @@ func (b *BulkIndexer) Send(buf *bytes.Buffer) error {
 // http://www.elasticsearch.org/guide/reference/api/bulk.html
 func WriteBulkBytes(op string, index string, _type string, id, parent, ttl string, date *time.Time, data interface{}) ([]byte, error) {
 	// only index and update are currently supported
-	if op != "index" && op != "update" {
+	if op != "index" && op != "update" && op != "create" {
 		return nil, errors.New(fmt.Sprintf("Operation '%s' is not yet supported", op))
 	}
 
