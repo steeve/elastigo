@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"strconv"
 
-	elastigo "github.com/mattbaird/elastigo/lib"
+	elastigo "github.com/steeve/elastigo/lib"
 )
 
 // The simplest usage of background bulk indexing
